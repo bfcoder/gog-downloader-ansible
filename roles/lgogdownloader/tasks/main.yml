@@ -60,7 +60,6 @@
     name: "Run GOG downloader"
     minute: "0"
     hour: "5"
-    weekday: "1"
     job: "/src/gogdownloader.sh"
     cron_file: gogdownloader
     user: "{{ansible_ssh_user}}"
