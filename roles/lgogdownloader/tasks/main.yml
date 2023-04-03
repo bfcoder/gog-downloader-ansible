@@ -1,0 +1,39 @@
+---
+- name: Add dependencies
+  apt:
+    name:
+      - build-essential
+      - libcurl4-openssl-dev
+      - libboost-regex-dev
+      - libjsoncpp-dev
+      - librhash-dev
+      - libtinyxml2-dev
+      - libhtmlcxx-dev
+      - libboost-system-dev
+      - libboost-filesystem-dev
+      - libboost-program-options-dev
+      - libboost-date-time-dev
+      - libboost-iostreams-dev
+      - help2man
+      - cmake
+      - pkg-config
+      - zlib1g-dev
+      - qtwebengine5-dev
+      - ninja-build
+    state: latest
+    update_cache: true
+
+- name: Clone lgogdownloader repo
+  ansible.builtin.git:
+    repo: https://github.com/Sude-/lgogdownloader.git
+    dest: /src/lgogdownloader
+    single_branch: yes
+    version: v3.11
+
+- name: Build lgogdownloader
+  become: yes
+  command: chdir=/src/lgogdownloader cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DUSE_QT_GUI=ON -GNinja
+
+- name: Install lgogdownloader
+  become: yes
+  command: chdir=/src/lgogdownloader ninja -Cbuild install

@@ -1,0 +1,48 @@
+---
+- name: Clone gog archivist repo
+  ansible.builtin.git:
+    repo: https://github.com/TheFrenchGhosty/TheFrenchGhostys-GOG-Archivist-Scripts.git
+    dest: /src/gog-archivist
+    single_branch: yes
+    version: master
+
+- name: Copy GOG script
+  ansible.builtin.copy:
+    remote_src: true
+    src: "/src/gog-archivist/GOG.sh"
+    dest: "{{ mnt_dir }}/gog/GOG.sh"
+  become: yes
+
+- name: Copy GOG Check Orphans script
+  ansible.builtin.copy:
+    remote_src: true
+    src: "/src/gog-archivist/GOG Check Orphans.sh"
+    dest: "{{ mnt_dir }}/gog/GOG Check Orphans.sh"
+  become: yes
+
+- name: Create log file
+  ansible.builtin.file:
+    path: /var/log/gogdownloader.log
+    owner: "{{ansible_ssh_user}}"
+    group: "{{ansible_ssh_user}}"
+    mode: u=rw,g=rw,o=
+    state: touch
+  become: yes
+
+- name: Copy gogdownloader script
+  template:
+    src: gogdownloader.sh
+    dest: "/src/gogdownloader.sh"
+    owner: "{{ansible_ssh_user}}"
+    group: "{{ansible_ssh_user}}"
+    mode: u=rwx,g=rwx,o=
+
+- name: Create gog downloader cron
+  ansible.builtin.cron:
+    name: "Run GOG downloader"
+    minute: "0"
+    hour: "5"
+    weekday: "1"
+    job: "/src/gogdownloader.sh"
+    cron_file: gogdownloader
+    user: "{{ansible_ssh_user}}"

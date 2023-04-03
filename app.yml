@@ -1,0 +1,10 @@
+---
+- hosts:
+    - gog-download-server
+  become: true
+  become_user: root
+  roles:
+    - role: essential
+    - role: lgogdownloader
+    - role: gog-archivist-scripts
+    - role: logrotate

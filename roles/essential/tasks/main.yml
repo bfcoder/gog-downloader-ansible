@@ -1,0 +1,28 @@
+---
+- name: Update packages
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: safe
+    autoremove: true
+
+- name: Install git-core
+  apt:
+    pkg: git-core
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Install Vim
+  apt:
+    pkg: vim
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Create app directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ mnt_dir }}/gog"

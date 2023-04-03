@@ -1,0 +1,28 @@
+---
+- name: Install logrotate
+  apt:
+    pkg: logrotate
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Create logrotate config file
+  file:
+    path: /etc/logrotate.d/gogdownloader
+    state: touch
+    mode: "0644"
+    owner: "{{ansible_ssh_user}}"
+    group: "{{ansible_ssh_user}}"
+
+- name: "Add config block to logrotate config file"
+  blockinfile:
+    path: /etc/logrotate.d/gogdownloader
+    block: |
+      /var/log/gogdownloader.log {
+        maxsize 100M
+        copytruncate
+        notifempty
+        missingok
+        compress
+        delaycompress
+      }
