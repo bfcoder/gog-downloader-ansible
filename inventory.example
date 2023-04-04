@@ -1,5 +1,5 @@
 [gog-download-server]
-192.168.42.44
+<ip address>
 
 [gog-download-server:vars]
 ansible_ssh_user=ubuntu
